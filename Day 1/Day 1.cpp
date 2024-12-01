@@ -1,39 +1,23 @@
+#include "tasks.h"
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include <algorithm>
-#include <numeric>
-#include <cmath>
+#include <unordered_map>
 
 int main() {
-    std::ifstream inputFile("input.txt");
-    std::vector<int> firstList, secondList, c;
-    int x, y;
+    std::vector<int> firstList, secondList, auxiliaryList;
+    std::unordered_map<int, int> frequencyMap;
 
-    if (inputFile.is_open()) {
-        while (inputFile >> x >> y) {
-            firstList.push_back(x);
-            secondList.push_back(y);
-        }
-        inputFile.close();
-    }
-    else {
-        std::cerr << "ERROR: Couldn't open file!";
-        return 1;
-    }
+    readDataFromFile("input.txt", firstList, secondList);
 
-    std::sort(firstList.begin(), firstList.end());
-    std::sort(secondList.begin(), secondList.end());
+    sortLists(firstList, secondList);
 
-    c.resize(firstList.size());
-    std::transform(firstList.begin(), firstList.end(), secondList.begin(), c.begin(), [](int ai, int bi) {
-        return std::abs(ai - bi);
-        });
-
-    int sum = std::accumulate(c.begin(), c.end(), 0);
-
-
+    int sum = calculateTotalDistance(firstList, secondList);
     std::cout << "Total distance: " << sum << std::endl;
+
+    int similarityScore = 0;
+    processFrequencyAndSimilarity(firstList, secondList, frequencyMap, auxiliaryList, similarityScore);
+
+    std::cout << "Similarity score: " << similarityScore << std::endl;
 
     return 0;
 }
